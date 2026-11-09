@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letter F Day! F is for Frog 🐸 - KG1 English Demo</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka & Bubblegum Sans for kindergarten typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    * {
+      font-family: 'Fredoka', 'Bubblegum Sans', cursive, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 20%, #cbf3f0 0%, #a2d2ff 60%, #70e000 120%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Floating pond animation */
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+    .floating {
+      animation: floaty 3.5s ease-in-out infinite;
+    }
+
+    @keyframes flyFlutter {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-10px) translateX(6px) rotate(4deg); }
+      50% { transform: translateY(-4px) translateX(-6px) rotate(-3deg); }
+      75% { transform: translateY(-14px) translateX(4px) rotate(2deg); }
+    }
+    .flutter-fly {
+      animation: flyFlutter 2.8s ease-in-out infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(-4deg); }
+      50% { transform: rotate(4deg); }
+    }
+    .wiggle:hover {
+      animation: wiggle 0.4s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(251, 191, 36, 0.4)); }
+      50% { transform: scale(1.06); filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.8)); }
+    }
+    .pulse-glow {
+      animation: pulseGlow 2.2s infinite;
+    }
+
+    /* Bouncy Button Glow */
+    .btn-bounce {
+      transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-bounce:active {
+      transform: scale(0.92);
+    }
+
+    /* Water ripple background effect */
+    .pond-bg {
+      background-color: #72efdd;
+      background-image: radial-gradient(#48cae4 15%, transparent 16%), radial-gradient(#48cae4 15%, transparent 16%);
+      background-size: 60px 60px;
+      background-position: 0 0, 30px 30px;
+      opacity: 0.22;
+    }
+
+    /* Tracing canvas styling */
+    #traceCanvas {
+      touch-action: none;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+<body class="text-slate-800 pb-16 relative">
+
+  <!-- Background decorative pattern -->
+  <div class="fixed inset-0 pointer-events-none pond-bg z-0"></div>
+
+  <!-- Top Teacher Navigation Bar -->
+  <header class="relative z-20 max-w-6xl mx-auto px-4 pt-4 flex flex-wrap items-center justify-between gap-3">
+    
+    <!-- Star Counter (Teacher Reward System) -->
+    <div class="flex items-center gap-2 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full shadow-md border-2 border-emerald-300">
+      <span class="text-2xl animate-spin" style="animation-duration: 8s;">⭐</span>
+      <span class="text-lg font-bold text-emerald-800">Class Stars:</span>
+      <span id="starScore" class="text-2xl font-black text-amber-500 min-w-[2ch]">0</span>
+      <button onclick="addTeacherStar(1)" class="btn-bounce ml-2 bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold px-3 py-1 rounded-full text-xs shadow">
+        +1 Star! ✨
+      </button>
+    </div>
+
+    <!-- Lesson Navigation Tabs (7 Complete Activities) -->
+    <div class="flex flex-wrap items-center gap-1.5 bg-white/95 backdrop-blur-md p-1.5 rounded-3xl shadow-md border-2 border-cyan-200 overflow-x-auto max-w-full">
+      <button onclick="switchTab('intro')" id="tab-intro" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold bg-emerald-500 text-white shadow-sm transition whitespace-nowrap">
+        1. Meet F
+      </button>
+      <button onclick="switchTab('feed')" id="tab-feed" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-800 hover:bg-emerald-100 transition whitespace-nowrap">
+        2. Feed Freddy 🐸
+      </button>
+      <button onclick="switchTab('flies')" id="tab-flies" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-800 hover:bg-emerald-100 transition whitespace-nowrap">
+        3. Catch Flies 🪰
+      </button>
+      <button onclick="switchTab('detective')" id="tab-detective" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-800 hover:bg-emerald-100 transition whitespace-nowrap">
+        4. Find Hidden F 🔍
+      </button>
+      <button onclick="switchTab('soundboard')" id="tab-soundboard" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-800 hover:bg-emerald-100 transition whitespace-nowrap">
+        5. Frog Hop 🪷
+      </button>
+      <button onclick="switchTab('workout')" id="tab-workout" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-800 hover:bg-emerald-100 transition whitespace-nowrap">
+        6. Workout 🤸
+      </button>
+      <button onclick="switchTab('chant')" id="tab-chant" class="tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-800 hover:bg-emerald-100 transition whitespace-nowrap">
+        7. Sing Chant 🎶
+      </button>
+    </div>
+
+    <!-- Quick Teacher Utilities & Speed Controls -->
+    <div class="flex items-center gap-2 flex-wrap">
+      
+
+
+      <!-- Voice toggle for teacher voice vs computer voice -->
+      <button onclick="toggleVoiceSpeech()" id="voiceToggle" class="btn-bounce bg-white/95 px-3 py-1.5 rounded-full border-2 border-emerald-300 shadow text-xs font-bold text-emerald-800 flex items-center gap-1" title="Teacher can mute computer voice to speak herself">
+        <span>🗣️ Voice:</span> <span id="voiceStatus" class="text-emerald-600 font-black">ON</span>
+      </button>
+
+      <!-- Sound FX Toggle -->
+      <button onclick="toggleAudioFX()" id="soundToggle" class="btn-bounce bg-white/95 p-1.5 px-2.5 rounded-full border-2 border-cyan-300 shadow text-base" title="Mute/Unmute sound effects">
+        🔊
+      </button>
+
+      <!-- Volume Slider -->
+      <div class="hidden sm:flex items-center gap-1 bg-white/95 px-2.5 py-1 rounded-full border-2 border-cyan-200 shadow text-xs font-bold text-slate-600">
+        <span>🔈</span>
+        <input type="range" id="volSlider" min="0" max="1" step="0.05" value="0.75" onchange="adjustVolume(this.value)" class="w-14 accent-emerald-500 cursor-pointer">
+      </div>
+
+      <!-- Fullscreen Toggle for Projector -->
+      <button onclick="toggleFullscreen()" class="btn-bounce bg-white/95 px-3 py-1.5 rounded-full border-2 border-cyan-300 shadow text-xs font-bold text-cyan-900" title="Full Screen for Projector/Smartboard">
+        ⛶ Fullscreen
+      </button>
+    </div>
+  </header>
+
+  <!-- Big Hero Banner -->
+  <main class="relative z-10 max-w-5xl mx-auto px-4 mt-3">
+    <div class="text-center mb-4">
+      <div class="inline-block bg-emerald-600/10 px-4 py-1 rounded-full mb-1">
+        <span class="text-emerald-800 font-extrabold tracking-wide uppercase text-xs sm:text-sm">KG1 English Phonics Demo • Lesson 1</span>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-black text-emerald-900 drop-shadow-sm flex items-center justify-center gap-3">
+        <span>Letter F Day!</span>
+        <span class="inline-block transform hover:scale-125 transition-transform duration-300">🐸</span>
+      </h1>
+      <p class="text-base md:text-xl text-emerald-800 font-bold mt-1">
+        Letter F says <span class="bg-amber-300 px-2.5 py-0.5 rounded-xl text-amber-950 font-black shadow-sm">/f/ /f/</span> like <strong class="text-green-700 underline decoration-wavy decoration-emerald-400">Frog</strong>!
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 1: MEET THE LETTER F                                      -->
+    <!-- ================================================================= -->
+    <section id="sec-intro" class="tab-section block bg-white/95 rounded-3xl p-5 md:p-7 shadow-2xl border-4 border-emerald-400">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        
+        <!-- Big Letter Display & Phonics Sound -->
+        <div class="flex flex-col items-center justify-center bg-gradient-to-b from-emerald-50 to-teal-100 rounded-3xl p-5 border-4 border-dashed border-emerald-300">
+          <div class="flex items-baseline gap-5 mb-3">
+            <div onclick="speakPhonics('Big F. Letter F makes the sound fuh.')" class="flex flex-col items-center cursor-pointer group">
+              <span class="text-8xl md:text-9xl font-black text-emerald-600 drop-shadow-md group-hover:scale-110 transition-transform">F</span>
+              <span class="text-xs font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded-full">Big F</span>
+            </div>
+            <div onclick="speakPhonics('Small f. Letter F makes the sound fuh.')" class="flex flex-col items-center cursor-pointer group">
+              <span class="text-7xl md:text-8xl font-black text-lime-600 drop-shadow-md group-hover:scale-110 transition-transform">f</span>
+              <span class="text-xs font-bold text-lime-800 bg-lime-200 px-2 py-0.5 rounded-full">Small f</span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap justify-center gap-2.5 w-full">
+            <button onclick="playPhonicSound()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white text-base font-bold px-5 py-2.5 rounded-full shadow-lg flex items-center gap-2">
+              <span>🔊</span> Hear Letter Sound (/f/)
+            </button>
+            <button onclick="playMouthExercise()" class="btn-bounce bg-cyan-500 hover:bg-cyan-600 text-white text-base font-bold px-5 py-2.5 rounded-full shadow-lg flex items-center gap-1.5">
+              <span>🪶</span> Mouth Exercise (Blow Air!)
+            </button>
+            <button onclick="speakPhonics('The letter F says fuh. F is for Frog!')" class="btn-bounce bg-amber-400 hover:bg-amber-500 text-amber-950 text-base font-bold px-5 py-2.5 rounded-full shadow-lg flex items-center gap-1.5">
+              <span>🗣️</span> Say with Teacher
+            </button>
+          </div>
+
+          <div class="mt-3 text-center bg-white/80 rounded-2xl p-2.5 w-full border border-emerald-200">
+            <p class="text-emerald-900 text-sm font-semibold">
+              💡 <strong>Teacher Tip:</strong> Put top teeth on bottom lip and blow gentle air: <span class="font-black text-emerald-700">/f/ /f/ /f/</span>!
+            </p>
+          </div>
+        </div>
+
+        <!-- Interactive Tracing Practice (Big F and Small f) -->
+        <div class="flex flex-col items-center">
+          <div class="flex items-center justify-between w-full mb-2 px-1 flex-wrap gap-2">
+            <div class="flex items-center gap-2">
+              <h3 class="text-lg font-bold text-emerald-900">✏️ Trace Letter:</h3>
+              <!-- Big F / Small f Toggle -->
+              <div class="bg-slate-100 p-0.5 rounded-full border border-slate-300 flex">
+                <button onclick="setTraceLetter('F')" id="traceBtnF" class="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500 text-white shadow">Big F</button>
+                <button onclick="setTraceLetter('f')" id="traceBtnSmallF" class="px-2.5 py-0.5 rounded-full text-xs font-black text-slate-600 hover:text-emerald-700">Small f</button>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <!-- Color picker -->
+              <div class="flex items-center gap-1">
+                <button onclick="changeTraceColor('#10b981')" class="w-5 h-5 rounded-full bg-emerald-500 border-2 border-white shadow-sm"></button>
+                <button onclick="changeTraceColor('#0284c7')" class="w-5 h-5 rounded-full bg-sky-600 border-2 border-white shadow-sm"></button>
+                <button onclick="changeTraceColor('#f59e0b')" class="w-5 h-5 rounded-full bg-amber-500 border-2 border-white shadow-sm"></button>
+                <button onclick="changeTraceColor('#ec4899')" class="w-5 h-5 rounded-full bg-pink-500 border-2 border-white shadow-sm"></button>
+              </div>
+              <button onclick="clearTraceCanvas()" class="btn-bounce text-xs bg-rose-100 hover:bg-rose-200 text-rose-700 px-2.5 py-1 rounded-full font-bold">
+                🔄 Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Canvas Container -->
+          <div class="relative w-full max-w-sm aspect-[4/3] bg-amber-50 rounded-2xl border-4 border-emerald-300 shadow-inner overflow-hidden">
+            <!-- Lined Guidelines -->
+            <div class="absolute inset-0 flex flex-col justify-between py-6 px-4 pointer-events-none opacity-40">
+              <div class="border-b-2 border-rose-400 w-full"></div>
+              <div class="border-b-2 border-dashed border-cyan-400 w-full"></div>
+              <div class="border-b-2 border-emerald-500 w-full"></div>
+            </div>
+            
+            <!-- Letter Outline to Trace -->
+            <div id="traceLetterGuide" class="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+              <span id="traceGuideText" class="text-9xl font-black text-slate-300 opacity-60">F</span>
+            </div>
+
+            <!-- Stroke order guide badges -->
+            <div id="traceHints" class="absolute inset-0 pointer-events-none p-4 text-xs font-bold text-emerald-800 flex flex-col justify-between">
+              <span class="bg-emerald-200/80 px-2 py-0.5 rounded-full self-start shadow-sm">1. Down ⬇️</span>
+              <span class="bg-cyan-200/80 px-2 py-0.5 rounded-full self-center shadow-sm">2. Across top ➡️</span>
+              <span class="bg-amber-200/80 px-2 py-0.5 rounded-full self-end shadow-sm">3. Across middle ➡️</span>
+            </div>
+
+            <!-- Real HTML5 Canvas for drawing -->
+            <canvas id="traceCanvas" class="absolute inset-0 w-full h-full z-10"></canvas>
+          </div>
+
+          <p class="text-xs text-slate-500 font-semibold mt-2">
+            Trace with finger or mouse! A sweet chime plays when you finish. ✨
+          </p>
+        </div>
+      </div>
+
+      <!-- Bottom Next Activity Button -->
+      <div class="mt-5 text-center">
+        <button onclick="switchTab('feed')" class="btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white text-base font-bold px-7 py-2.5 rounded-full shadow-lg">
+          Next: Feed Freddy the Frog! 🐸 ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 2: FEED FREDDY THE FROG (Snack Sorting Game)             -->
+    <!-- ================================================================= -->
+    <section id="sec-feed" class="tab-section hidden bg-white/95 rounded-3xl p-5 md:p-7 shadow-2xl border-4 border-emerald-400">
+      <div class="text-center mb-3">
+        <h2 class="text-2xl md:text-3xl font-black text-emerald-900">
+          Feed Freddy the Frog! 🍽️
+        </h2>
+        <p class="text-emerald-700 font-bold text-sm md:text-base">
+          Freddy only eats yummy snacks that start with <span class="bg-amber-200 px-2 py-0.5 rounded-lg text-emerald-950 font-black">/f/</span>!
+          Tap or drag the snacks into his mouth!
+        </p>
+      </div>
+
+      <!-- Frog Pond Area -->
+      <div class="relative bg-gradient-to-b from-cyan-100 to-emerald-200 rounded-3xl p-5 border-4 border-cyan-400 min-h-[350px] flex flex-col md:flex-row items-center justify-between gap-5 overflow-hidden">
+        
+        <!-- Snack Choices Area -->
+        <div class="w-full md:w-1/2 flex flex-col items-center">
+          <span class="text-xs font-bold text-emerald-800 bg-white/80 px-3 py-1 rounded-full mb-3 shadow-sm">
+            👇 Click or Drag a Snack!
+          </span>
+          <div id="snackContainer" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 w-full">
+            <!-- Injected via JavaScript -->
+          </div>
+          <button onclick="resetSnacks()" class="btn-bounce mt-3 text-xs font-bold text-emerald-800 bg-white px-3.5 py-1.5 rounded-full border border-emerald-300 shadow">
+            🔄 Reset Snacks
+          </button>
+        </div>
+
+        <!-- Freddy The Frog Character Target -->
+        <div id="frogTarget" ondragover="allowDrop(event)" ondrop="handleDrop(event)" class="w-full md:w-1/2 flex flex-col items-center justify-center p-3 relative">
+          <!-- Speech Balloon -->
+          <div id="frogSpeech" class="bg-white px-4 py-2 rounded-2xl shadow-md border-2 border-emerald-400 mb-2 font-bold text-emerald-900 text-base transition-all transform scale-100 text-center">
+            "Ribbit! I am hungry for Letter F snacks!" 😋
+          </div>
+
+          <!-- Cartoon Frog SVG -->
+          <div id="frogGraphic" class="floating relative w-52 h-52 cursor-pointer" onclick="pokeFrog()">
+            <!-- Lily Pad under frog -->
+            <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 w-60 h-14 bg-emerald-600 rounded-[50%] shadow-lg border-4 border-emerald-700 -z-10"></div>
+            
+            <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-xl">
+              <!-- Frog Body -->
+              <ellipse cx="100" cy="120" rx="70" ry="55" fill="#4ade80" stroke="#16a34a" stroke-width="5" />
+              <!-- Tummy -->
+              <ellipse cx="100" cy="130" rx="45" ry="35" fill="#bbf7d0" />
+
+              <!-- Left Eye -->
+              <circle cx="65" cy="65" r="24" fill="#4ade80" stroke="#16a34a" stroke-width="5" />
+              <circle cx="65" cy="65" r="14" fill="#ffffff" />
+              <circle id="leftPupil" cx="68" cy="63" r="7" fill="#0f172a" />
+              <circle cx="70" cy="60" r="3" fill="#ffffff" />
+
+              <!-- Right Eye -->
+              <circle cx="135" cy="65" r="24" fill="#4ade80" stroke="#16a34a" stroke-width="5" />
+              <circle cx="135" cy="65" r="14" fill="#ffffff" />
+              <circle id="rightPupil" cx="132" cy="63" r="7" fill="#0f172a" />
+              <circle cx="134" cy="60" r="3" fill="#ffffff" />
+
+              <!-- Rosy Cheeks -->
+              <circle cx="55" cy="122" r="10" fill="#f472b6" opacity="0.6" />
+              <circle cx="145" cy="122" r="10" fill="#f472b6" opacity="0.6" />
+
+              <!-- Nostrils -->
+              <ellipse cx="93" cy="100" rx="2.5" ry="3.5" fill="#166534" />
+              <ellipse cx="107" cy="100" rx="2.5" ry="3.5" fill="#166534" />
+
+              <!-- Mouth (Animates open on eating) -->
+              <path id="frogMouth" d="M 60 120 Q 100 150 140 120" stroke="#15803d" stroke-width="5" fill="transparent" stroke-linecap="round" class="transition-all duration-300" />
+
+              <!-- Front Legs -->
+              <ellipse cx="60" cy="165" rx="16" ry="8" fill="#22c55e" stroke="#16a34a" stroke-width="3" />
+              <ellipse cx="140" cy="165" rx="16" ry="8" fill="#22c55e" stroke="#16a34a" stroke-width="3" />
+            </svg>
+          </div>
+          
+          <span class="text-xs text-emerald-800 font-bold mt-2 bg-emerald-100/90 px-3 py-0.5 rounded-full shadow-sm">
+            👆 Click Freddy to make him ribbit!
+          </span>
+        </div>
+      </div>
+
+      <!-- Bottom Next Activity Button -->
+      <div class="mt-4 text-center">
+        <button onclick="switchTab('flies')" class="btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white text-base font-bold px-7 py-2.5 rounded-full shadow-lg">
+          Next: Catch the Letter F Flies! 🪰 ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 3: CATCH THE LETTER F FLIES! (NEW Fly Catcher Game)       -->
+    <!-- ================================================================= -->
+    <section id="sec-flies" class="tab-section hidden bg-white/95 rounded-3xl p-5 md:p-7 shadow-2xl border-4 border-emerald-400">
+      <div class="text-center mb-3">
+        <h2 class="text-2xl md:text-3xl font-black text-emerald-900">
+          Catch the Letter F Flies! 🪰
+        </h2>
+        <p class="text-emerald-700 font-bold text-sm md:text-base">
+          Help Freddy catch the buzzing flies carrying <span class="bg-amber-200 px-2 py-0.5 rounded-lg text-emerald-950 font-black">Letter F</span>!
+          Tap the flies with <strong>F</strong> or <strong>f</strong>!
+        </p>
+      </div>
+
+      <!-- Game Container -->
+      <div class="relative bg-gradient-to-b from-sky-100 via-cyan-100 to-emerald-200 rounded-3xl p-4 border-4 border-cyan-400 min-h-[360px] overflow-hidden select-none">
+        
+        <!-- Score Bar & Controls -->
+        <div class="flex items-center justify-between mb-3 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-2xl border border-cyan-200 shadow-sm">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🪰</span>
+            <span class="font-black text-emerald-900 text-base">F Flies Caught:</span>
+            <span id="flyScoreText" class="text-xl font-black text-amber-500">0 / 4</span>
+          </div>
+          <button onclick="resetFlyGame()" class="btn-bounce bg-amber-400 hover:bg-amber-500 text-amber-950 text-xs font-bold px-3 py-1 rounded-full shadow">
+            🔄 New Flies
+          </button>
+        </div>
+
+        <!-- Flying Arena -->
+        <div id="flyArena" class="relative w-full h-64 border-2 border-dashed border-cyan-300 rounded-2xl bg-white/40 overflow-hidden">
+          <!-- Animated Freddy Face in bottom left -->
+          <div class="absolute bottom-2 left-2 z-10 flex items-center gap-2 bg-emerald-500/90 text-white px-3 py-1.5 rounded-full shadow">
+            <span class="text-2xl">🐸</span>
+            <span class="text-xs font-black">Freddy's Ready!</span>
+          </div>
+
+          <!-- Dynamic Flies Injected Here -->
+          <div id="flyTargetsContainer" class="absolute inset-0"></div>
+        </div>
+
+        <!-- Success Banner (hidden until win) -->
+        <div id="flyWinBanner" class="hidden absolute inset-0 bg-emerald-900/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center p-6 text-center text-white rounded-3xl">
+          <span class="text-6xl mb-2">🎉 🐸 ⭐</span>
+          <h3 class="text-3xl font-black text-amber-300">Awesome Job!</h3>
+          <p class="text-lg font-bold text-white max-w-md mt-1">
+            Freddy caught all the Letter F flies! He is super full and happy!
+          </p>
+          <div class="mt-4 flex gap-3">
+            <button onclick="resetFlyGame()" class="btn-bounce bg-amber-400 text-amber-950 font-black px-5 py-2 rounded-full text-base shadow-lg">
+              Play Again 🔄
+            </button>
+            <button onclick="switchTab('detective')" class="btn-bounce bg-emerald-500 text-white font-black px-5 py-2 rounded-full text-base shadow-lg">
+              Next Activity 🔍 ➡️
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Next Activity Button -->
+      <div class="mt-4 text-center">
+        <button onclick="switchTab('detective')" class="btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white text-base font-bold px-7 py-2.5 rounded-full shadow-lg">
+          Next: Pond Detective (Find Hidden F) 🔍 ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 4: POND DETECTIVE: FIND HIDDEN Fs (NEW Visual Game)      -->
+    <!-- ================================================================= -->
+    <section id="sec-detective" class="tab-section hidden bg-white/95 rounded-3xl p-5 md:p-7 shadow-2xl border-4 border-emerald-400">
+      <div class="text-center mb-3">
+        <h2 class="text-2xl md:text-3xl font-black text-emerald-900">
+          Pond Detective: Find Hidden F's! 🔍
+        </h2>
+        <p class="text-emerald-700 font-bold text-sm md:text-base">
+          There are <strong>5 letter F's</strong> hiding around Freddy's pond! Can you spot them all?
+        </p>
+      </div>
+
+      <!-- Illustrated Pond Search Area -->
+      <div class="relative bg-gradient-to-b from-sky-200 via-teal-100 to-emerald-200 rounded-3xl p-5 border-4 border-cyan-400 min-h-[380px] overflow-hidden select-none">
+        
+        <!-- Detective Score Header -->
+        <div class="flex items-center justify-between mb-3 bg-white/85 px-4 py-2 rounded-2xl shadow-sm border border-emerald-200">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">🔎</span>
+            <span class="font-black text-emerald-900 text-sm md:text-base">Hidden F's Discovered:</span>
+            <span id="detectiveScoreText" class="text-xl font-black text-amber-500">0 / 5</span>
+          </div>
+          <button onclick="resetDetectiveGame()" class="btn-bounce bg-amber-400 hover:bg-amber-500 text-amber-950 text-xs font-bold px-3 py-1 rounded-full shadow">
+            🔄 Hide Again
+          </button>
+        </div>
+
+        <!-- Pond Scene Canvas with Hiding Spots -->
+        <div class="relative w-full h-80 rounded-2xl bg-gradient-to-b from-sky-300 via-cyan-100 to-emerald-300 border-2 border-emerald-300 overflow-hidden shadow-inner">
+          
+          <!-- Decorative Background Elements -->
+          <div class="absolute top-4 left-10 text-5xl opacity-80 pointer-events-none">☁️</div>
+          <div class="absolute top-6 right-16 text-4xl opacity-80 pointer-events-none">☁️</div>
+          <div class="absolute top-3 right-6 text-4xl animate-spin" style="animation-duration: 20s;">☀️</div>
+          <div class="absolute bottom-8 left-1/4 text-3xl opacity-60 pointer-events-none">〰️〰️</div>
+
+          <!-- HIDDEN SPOT 1: Behind Cattails/Reeds (Left) -->
+          <div class="absolute bottom-4 left-6 flex flex-col items-center">
+            <div id="hide-1" onclick="findHiddenLetter(1, 'Big F on the Reeds!')" class="hidden-letter cursor-pointer text-3xl font-black text-amber-600 bg-amber-200/90 rounded-full w-11 h-11 flex items-center justify-center shadow-md border-2 border-amber-400 pulse-glow transform -translate-y-6 transition hover:scale-125">
+              F
+            </div>
+            <div class="text-6xl pointer-events-none -mt-4">🌾</div>
+          </div>
+
+          <!-- HIDDEN SPOT 2: Inside Water Lily Flower (Center Left) -->
+          <div class="absolute bottom-12 left-1/3 flex flex-col items-center">
+            <div id="hide-2" onclick="findHiddenLetter(2, 'Small f in the Lotus Flower!')" class="hidden-letter cursor-pointer text-2xl font-black text-pink-600 bg-pink-200/90 rounded-full w-10 h-10 flex items-center justify-center shadow-md border-2 border-pink-400 pulse-glow transform -translate-y-4 transition hover:scale-125">
+              f
+            </div>
+            <div class="text-5xl pointer-events-none -mt-3">🪷</div>
+          </div>
+
+          <!-- HIDDEN SPOT 3: On Top of the Pond Cloud (Top Center) -->
+          <div class="absolute top-10 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <div id="hide-3" onclick="findHiddenLetter(3, 'Big F floating on a Cloud!')" class="hidden-letter cursor-pointer text-3xl font-black text-sky-600 bg-sky-200/90 rounded-full w-11 h-11 flex items-center justify-center shadow-md border-2 border-sky-400 pulse-glow transition hover:scale-125">
+              F
+            </div>
+          </div>
+
+          <!-- HIDDEN SPOT 4: Behind the Mossy Turtle Rock (Center Right) -->
+          <div class="absolute bottom-6 right-1/3 flex flex-col items-center">
+            <div id="hide-4" onclick="findHiddenLetter(4, 'Small f beside the Rock!')" class="hidden-letter cursor-pointer text-2xl font-black text-emerald-700 bg-emerald-200/90 rounded-full w-10 h-10 flex items-center justify-center shadow-md border-2 border-emerald-400 pulse-glow transform -translate-y-4 transition hover:scale-125">
+              f
+            </div>
+            <div class="text-5xl pointer-events-none -mt-3">🪨</div>
+          </div>
+
+          <!-- HIDDEN SPOT 5: Under Freddy's Lily Pad (Right) -->
+          <div class="absolute bottom-4 right-8 flex flex-col items-center">
+            <div id="hide-5" onclick="findHiddenLetter(5, 'Big F with Freddy the Frog!')" class="hidden-letter cursor-pointer text-3xl font-black text-lime-700 bg-lime-200/90 rounded-full w-11 h-11 flex items-center justify-center shadow-md border-2 border-lime-400 pulse-glow transform -translate-y-6 transition hover:scale-125">
+              F
+            </div>
+            <div class="text-6xl pointer-events-none -mt-4">🐸</div>
+          </div>
+
+          <!-- Letter Basket (Collected) -->
+          <div class="absolute bottom-2 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full border-2 border-amber-300 shadow flex items-center gap-2">
+            <span class="text-xs font-bold text-amber-950">🧺 Basket:</span>
+            <div id="foundBasket" class="flex gap-1 min-w-[120px] justify-center">
+              <span class="text-xs text-slate-400 italic">Find them all!</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Next Activity Button -->
+      <div class="mt-4 text-center">
+        <button onclick="switchTab('soundboard')" class="btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white text-base font-bold px-7 py-2.5 rounded-full shadow-lg">
+          Next: Lily Pad Phonics Hop 🪷 ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 5: LILY PAD PHONICS HOP (Vocabulary Soundboard)          -->
+    <!-- ================================================================= -->
+    <section id="sec-soundboard" class="tab-section hidden bg-white/95 rounded-3xl p-5 md:p-7 shadow-2xl border-4 border-emerald-400">
+      <div class="text-center mb-4">
+        <h2 class="text-2xl md:text-3xl font-black text-emerald-900">
+          Lily Pad Phonics Hop! 🪷
+        </h2>
+        <p class="text-emerald-700 font-bold text-sm md:text-base">
+          Click any lily pad! Freddy will jump and speak the word with slow, clear pronunciation!
+        </p>
+      </div>
+
+      <!-- Lily Pad Pond Grid -->
+      <div class="relative bg-cyan-200/50 rounded-3xl p-5 border-4 border-cyan-400">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3.5">
+          
+          <!-- Lily Pad 1: Frog -->
+          <div onclick="hopToWord('Frog', '🐸', this)" class="lily-pad btn-bounce cursor-pointer flex flex-col items-center justify-center p-3 bg-emerald-500 hover:bg-emerald-600 rounded-3xl text-white shadow-lg border-b-4 border-emerald-700 transform hover:-translate-y-2 transition">
+            <span class="text-5xl mb-1">🐸</span>
+            <span class="text-lg font-black tracking-wide">Frog</span>
+            <span class="text-xs bg-emerald-800/60 px-2 py-0.5 rounded-full mt-1">/f/ - Frog</span>
+          </div>
+
+          <!-- Lily Pad 2: Fish -->
+          <div onclick="hopToWord('Fish', '🐟', this)" class="lily-pad btn-bounce cursor-pointer flex flex-col items-center justify-center p-3 bg-cyan-500 hover:bg-cyan-600 rounded-3xl text-white shadow-lg border-b-4 border-cyan-700 transform hover:-translate-y-2 transition">
+            <span class="text-5xl mb-1">🐟</span>
+            <span class="text-lg font-black tracking-wide">Fish</span>
+            <span class="text-xs bg-cyan-800/60 px-2 py-0.5 rounded-full mt-1">/f/ - Fish</span>
+          </div>
+
+          <!-- Lily Pad 3: Fox -->
+          <div onclick="hopToWord('Fox', '🦊', this)" class="lily-pad btn-bounce cursor-pointer flex flex-col items-center justify-center p-3 bg-amber-500 hover:bg-amber-600 rounded-3xl text-white shadow-lg border-b-4 border-amber-700 transform hover:-translate-y-2 transition">
+            <span class="text-5xl mb-1">🦊</span>
+            <span class="text-lg font-black tracking-wide">Fox</span>
+            <span class="text-xs bg-amber-800/60 px-2 py-0.5 rounded-full mt-1">/f/ - Fox</span>
+          </div>
+
+          <!-- Lily Pad 4: Flower -->
+          <div onclick="hopToWord('Flower', '🌸', this)" class="lily-pad btn-bounce cursor-pointer flex flex-col items-center justify-center p-3 bg-pink-500 hover:bg-pink-600 rounded-3xl text-white shadow-lg border-b-4 border-pink-700 transform hover:-translate-y-2 transition">
+            <span class="text-5xl mb-1">🌸</span>
+            <span class="text-lg font-black tracking-wide">Flower</span>
+            <span class="text-xs bg-pink-800/60 px-2 py-0.5 rounded-full mt-1">/f/ - Flower</span>
+          </div>
+
+          <!-- Lily Pad 5: Fan -->
+          <div onclick="hopToWord('Fan', '🪭', this)" class="lily-pad btn-bounce cursor-pointer flex flex-col items-center justify-center p-3 bg-teal-500 hover:bg-teal-600 rounded-3xl text-white shadow-lg border-b-4 border-teal-700 transform hover:-translate-y-2 transition">
+            <span class="text-5xl mb-1">🪭</span>
+            <span class="text-lg font-black tracking-wide">Fan</span>
+            <span class="text-xs bg-teal-800/60 px-2 py-0.5 rounded-full mt-1">/f/ - Fan</span>
+          </div>
+
+          <!-- Lily Pad 6: Foot -->
+          <div onclick="hopToWord('Foot', '🦶', this)" class="lily-pad btn-bounce cursor-pointer flex flex-col items-center justify-center p-3 bg-lime-600 hover:bg-lime-700 rounded-3xl text-white shadow-lg border-b-4 border-lime-800 transform hover:-translate-y-2 transition">
+            <span class="text-5xl mb-1">🦶</span>
+            <span class="text-lg font-black tracking-wide">Foot</span>
+            <span class="text-xs bg-lime-900/60 px-2 py-0.5 rounded-full mt-1">/f/ - Foot</span>
+          </div>
+        </div>
+
+        <!-- Big Jumping Frog Animation Display -->
+        <div class="mt-5 flex items-center justify-center gap-4 bg-white/80 p-3 rounded-2xl shadow-inner border border-cyan-300">
+          <span id="activeHopEmoji" class="text-4xl animate-bounce">🐸</span>
+          <span id="activeHopWord" class="text-2xl font-black text-emerald-900">Click a Lily Pad to Hop!</span>
+          <button onclick="autoHopAllWords()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow ml-2">
+            ▶️ Hop Through All Words
+          </button>
+        </div>
+      </div>
+
+      <!-- Bottom Next Activity Button -->
+      <div class="mt-4 text-center">
+        <button onclick="switchTab('workout')" class="btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white text-base font-bold px-7 py-2.5 rounded-full shadow-lg">
+          Next: Frog Phonics Workout! 🤸 ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 6: FROG PHONICS WORKOUT (NEW Kinesthetic TPR Break)       -->
+    <!-- ================================================================= -->
+    <section id="sec-workout" class="tab-section hidden bg-white/95 rounded-3xl p-5 md:p-7 shadow-2xl border-4 border-emerald-400">
+      <div class="text-center mb-4">
+        <h2 class="text-2xl md:text-3xl font-black text-emerald-900">
+          Letter F Action Workout! 🤸‍♂️
+        </h2>
+        <p class="text-emerald-700 font-bold text-sm md:text-base">
+          Get up and move! Kindergarten physical movement break for Letter F!
+        </p>
+      </div>
+
+      <!-- Workout Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        
+        <!-- Action 1: Hop Like a Frog -->
+        <div class="bg-gradient-to-b from-emerald-50 to-emerald-100 rounded-3xl p-4 border-2 border-emerald-300 shadow flex flex-col items-center text-center justify-between">
+          <div class="text-5xl mb-2 animate-bounce">🐸</div>
+          <h3 class="text-lg font-black text-emerald-900">Hop Like a Frog!</h3>
+          <p class="text-xs text-emerald-800 font-semibold my-2">
+            Crouch down low... 1, 2, 3... HOP up high into the air!
+          </p>
+          <button onclick="doWorkoutAction('frog')" class="btn-bounce w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black py-2 rounded-2xl text-sm shadow">
+            🟢 Let's Hop!
+          </button>
+        </div>
+
+        <!-- Action 2: Swim Like a Fish -->
+        <div class="bg-gradient-to-b from-cyan-50 to-cyan-100 rounded-3xl p-4 border-2 border-cyan-300 shadow flex flex-col items-center text-center justify-between">
+          <div class="text-5xl mb-2 wiggle">🐟</div>
+          <h3 class="text-lg font-black text-cyan-900">Swim Like a Fish!</h3>
+          <p class="text-xs text-cyan-800 font-semibold my-2">
+            Hands together like fins! Swish left... swish right... swim!
+          </p>
+          <button onclick="doWorkoutAction('fish')" class="btn-bounce w-full bg-cyan-500 hover:bg-cyan-600 text-white font-black py-2 rounded-2xl text-sm shadow">
+            🔵 Let's Swim!
+          </button>
+        </div>
+
+        <!-- Action 3: Blow Like a Fan -->
+        <div class="bg-gradient-to-b from-teal-50 to-teal-100 rounded-3xl p-4 border-2 border-teal-300 shadow flex flex-col items-center text-center justify-between">
+          <div class="text-5xl mb-2 animate-spin" style="animation-duration: 6s;">🪭</div>
+          <h3 class="text-lg font-black text-teal-900">Blow Like a Fan!</h3>
+          <p class="text-xs text-teal-800 font-semibold my-2">
+            Top teeth on bottom lip: blow gentle air: /ffffffff/!
+          </p>
+          <button onclick="doWorkoutAction('fan')" class="btn-bounce w-full bg-teal-500 hover:bg-teal-600 text-white font-black py-2 rounded-2xl text-sm shadow">
+            🌬️ Let's Blow Air!
+          </button>
+        </div>
+
+        <!-- Action 4: Balance Like a Flamingo -->
+        <div class="bg-gradient-to-b from-pink-50 to-pink-100 rounded-3xl p-4 border-2 border-pink-300 shadow flex flex-col items-center text-center justify-between">
+          <div class="text-5xl mb-2">🦩</div>
+          <h3 class="text-lg font-black text-pink-900">Stand on One Foot!</h3>
+          <p class="text-xs text-pink-800 font-semibold my-2">
+            Lift one leg up! Balance like a flamingo: 1... 2... 3!
+          </p>
+          <button onclick="doWorkoutAction('flamingo')" class="btn-bounce w-full bg-pink-500 hover:bg-pink-600 text-white font-black py-2 rounded-2xl text-sm shadow">
+            🌸 Let's Balance!
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Workout Display Banner -->
+      <div id="workoutStatusBox" class="mt-4 bg-white/90 rounded-2xl p-3 border-2 border-emerald-300 text-center font-bold text-emerald-900 text-base shadow-sm">
+        ✨ Click any action button above to guide the class with sound & movement!
+      </div>
+
+      <!-- Bottom Next Activity Button -->
+      <div class="mt-4 text-center">
+        <button onclick="switchTab('chant')" class="btn-bounce bg-emerald-600 hover:bg-emerald-700 text-white text-base font-bold px-7 py-2.5 rounded-full shadow-lg">
+          Next: Sing the Frog Chant! 🎶 ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- SECTION 7: SING-ALONG FROG CHANT                                  -->
+    <!-- ================================================================= -->
+    <section id="sec-chant" class="tab-section hidden bg-white/95 rounded-3xl p-5 md:p-7 shadow-2xl border-4 border-emerald-400">
+      <div class="text-center mb-4">
+        <h2 class="text-3xl md:text-4xl font-black text-emerald-900">
+          Letter F Sing-Along Chant! 🎶
+        </h2>
+        <p class="text-emerald-700 font-bold text-base md:text-lg">
+          Let's sing together! Measured, slow rhythm so all the little frogs can follow!
+        </p>
+      </div>
+
+      <!-- Karaoke Style Chant Card -->
+      <div class="max-w-xl mx-auto bg-gradient-to-b from-amber-50 to-emerald-50 rounded-3xl p-5 md:p-7 border-4 border-emerald-300 shadow-inner text-center">
+        <div class="space-y-4 text-xl md:text-2xl font-black text-slate-700 leading-relaxed">
+          <p id="chant-line-1" class="chant-line p-2 rounded-2xl transition duration-300">
+            "F is for <span class="text-emerald-600 underline">Frog</span>, jumping up high! 🐸"
+          </p>
+          <p id="chant-line-2" class="chant-line p-2 rounded-2xl transition duration-300">
+            "/f/ /f/ <span class="text-emerald-600 underline">Frog</span>, leaping to the sky! ☁️"
+          </p>
+          <p id="chant-line-3" class="chant-line p-2 rounded-2xl transition duration-300">
+            "Ribbit, ribbit, <span class="text-amber-600 font-extrabold">HOP</span>! Ribbit, ribbit, <span class="text-rose-600 font-extrabold">STOP</span>! 🛑"
+          </p>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <button id="btnPlayChant" onclick="playChantKaraoke()" class="btn-bounce bg-emerald-500 hover:bg-emerald-600 text-white text-lg font-black px-7 py-3 rounded-full shadow-xl flex items-center gap-2">
+            <span>▶️</span> Start Sing-Along (Slow & Clear)
+          </button>
+          <button onclick="playHopSound(); showToast('Hop! 🐸', '🐸');" class="btn-bounce bg-amber-400 hover:bg-amber-500 text-amber-950 text-base font-bold px-5 py-3 rounded-full shadow">
+            Hop on Beat! 🐸
+          </button>
+        </div>
+      </div>
+
+      <!-- Final Celebration Banner -->
+      <div class="mt-6 text-center">
+        <p class="text-sm text-emerald-800 font-bold">
+          🎉 Finished the lesson? Reward the class with stars!
+        </p>
+        <button onclick="addTeacherStar(3); window.confetti && window.confetti({ particleCount: 70, spread: 90, origin: { y: 0.6 } });" class="btn-bounce mt-2 bg-amber-400 hover:bg-amber-500 text-amber-950 font-black px-6 py-2.5 rounded-full text-base shadow-lg">
+          🌟 +3 Class Stars & Confetti! 🎊
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Toast Notification Banner -->
+  <div id="toastBanner" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-emerald-950/90 text-white px-5 py-2.5 rounded-full shadow-2xl border-2 border-emerald-400 flex items-center gap-2 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none text-base font-bold">
+    <span id="toastIcon" class="text-xl">⭐</span>
+    <span id="toastMsg">Great job!</span>
+  </div>
+
+  <!-- =========================================================
+       JAVASCRIPT LOGIC & AUDIO ENGINE
+       ========================================================= -->
+  <script>
+    /* =========================================================
+       STATE VARIABLES
+       ========================================================= */
+    let classStars = 0;
+    let soundEnabled = true;
+    let speechEnabled = true;
+    let currentMasterVolume = 0.75;
+    
+    // KG1 Calibrated Speech Rate: 0.65 for slow, deliberate clarity
+    let currentSpeechRate = 0.82; 
+
+    let audioCtx = null;
+    let masterGain = null;
+
+    /* =========================================================
+       WEB AUDIO SYNTHESIZER ENGINE (Rich, warm, child-safe)
+       ========================================================= */
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new AudioContext();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.setValueAtTime(currentMasterVolume, audioCtx.currentTime);
+        masterGain.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function adjustVolume(val) {
+      currentMasterVolume = parseFloat(val);
+      if (masterGain && audioCtx) {
+        masterGain.gain.setValueAtTime(currentMasterVolume, audioCtx.currentTime);
+      }
+    }
+
+    // Warm, rounded Marimba/Chime Note generator (No harsh squares or clicks)
+    function playWarmChime(freq = 523.25, duration = 0.5, type = 'sine') {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        // Fundamental tone + gentle 2nd harmonic for rich bell timbre
+        [1, 2.01].forEach((harmonic, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq * harmonic, now);
+
+          // Soft smooth attack, logarithmic natural decay
+          const amp = idx === 0 ? 0.35 : 0.12;
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.linearRampToValueAtTime(amp, now + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+          osc.connect(gain);
+          gain.connect(masterGain);
+
+          osc.start(now);
+          osc.stop(now + duration + 0.05);
+        });
+      } catch (e) {}
+    }
+
+    // Star reward chime: Sweet high major triad arpeggio (C6, E6, G6, C7)
+    function playStarSound() {
+      if (!soundEnabled) return;
+      const notes = [1046.50, 1318.51, 1567.98, 2093.00];
+      notes.forEach((freq, i) => {
+        setTimeout(() => playWarmChime(freq, 0.45, 'triangle'), i * 85);
+      });
+    }
+
+    // Frog Hop: Soft rubbery upward glide
+    function playHopSound() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        // Natural bouncy swoop
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(520, now + 0.18);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.28, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+
+        osc.start(now);
+        osc.stop(now + 0.25);
+      } catch (e) {}
+    }
+
+    // Realistic yet cute organic frog "croak/ribbit"
+    // Uses dual resonant pulse wave shaping with throat vocal cavity simulation
+    function playFrogRibbit() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        // Two sequential vocal pulses for "Rib-bit"
+        const pulses = [
+          { time: now, duration: 0.14, startF: 160, endF: 120 },
+          { time: now + 0.16, duration: 0.22, startF: 210, endF: 140 }
+        ];
+
+        pulses.forEach(pulse => {
+          const osc = ctx.createOscillator();
+          const filter = ctx.createBiquadFilter();
+          const gain = ctx.createGain();
+
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(pulse.startF, pulse.time);
+          osc.frequency.exponentialRampToValueAtTime(pulse.endF, pulse.time + pulse.duration);
+
+          // Vocal tract formant filter (gives that deep throaty pond frog resonance)
+          filter.type = 'bandpass';
+          filter.frequency.setValueAtTime(450, pulse.time);
+          filter.frequency.linearRampToValueAtTime(750, pulse.time + (pulse.duration * 0.5));
+          filter.Q.value = 5.0;
+
+          gain.gain.setValueAtTime(0.001, pulse.time);
+          gain.gain.linearRampToValueAtTime(0.35, pulse.time + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, pulse.time + pulse.duration);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(masterGain);
+
+          osc.start(pulse.time);
+          osc.stop(pulse.time + pulse.duration + 0.05);
+        });
+      } catch (e) {}
+    }
+
+    // Soft water splash sound when frog eats or lands on lily pad
+    function playWaterSplash() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        
+        // Filtered noise burst for water drop / splash
+        const bufferSize = ctx.sampleRate * 0.2;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.04));
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(1200, now);
+        filter.frequency.exponentialRampToValueAtTime(400, now + 0.2);
+        filter.Q.value = 2.0;
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+
+        noise.start(now);
+      } catch (e) {}
+    }
+
+    // Gentle "Try Again" chord (Warm, non-punishing low woodblock tone)
+    function playOopsSound() {
+      if (!soundEnabled) return;
+      playWarmChime(330, 0.25, 'sine');
+      setTimeout(() => playWarmChime(261.63, 0.35, 'sine'), 120);
+    }
+
+    // Realistic /f/ soft labiodental fricative sound (air puff through teeth)
+    function playAcousticFSound() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const dur = 0.24;
+        const bufferSize = ctx.sampleRate * dur;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        // Bandpass to shape natural unvoiced /f/ air sound around 2200-3500 Hz
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(2800, now);
+        filter.Q.value = 1.2;
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.18, now + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+
+        noise.start(now);
+      } catch (e) {}
+    }
+
+    /* =========================================================
+       HIGH QUALITY SPEECH SYNTHESIS ENGINE (KG1 Tailored)
+       ========================================================= */
+    let cachedVoices = [];
+    function loadVoices() {
+      if ('speechSynthesis' in window) {
+        cachedVoices = window.speechSynthesis.getVoices();
+      }
+    }
+    if ('speechSynthesis' in window) {
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function getBestEnglishVoice() {
+      if (!cachedVoices.length && 'speechSynthesis' in window) {
+        cachedVoices = window.speechSynthesis.getVoices();
+      }
+      // Prioritize natural, expressive English voices
+      const voiceNames = [
+        'Google US English', 'Samantha', 'Victoria', 'Karen', 
+        'Zira', 'Microsoft Zira', 'Moira', 'Tessa', 'Fiona'
+      ];
+      for (const name of voiceNames) {
+        const found = cachedVoices.find(v => v.name.includes(name));
+        if (found) return found;
+      }
+      // Fallback: any standard en-US or en-GB female/clear voice
+      return cachedVoices.find(v => v.lang.startsWith('en')) || null;
+    }
+
+    function speakPhonics(text, rate = 0.82) {
+      if (!speechEnabled || !('speechSynthesis' in window)) return;
+      
+      window.speechSynthesis.cancel(); // Stop overlap
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = rate; // Clear, measured delivery for 3-5 year olds
+      utterance.pitch = 1.18; // Warm, friendly kindergarten teacher tone
+      
+      const bestVoice = getBestEnglishVoice();
+      if (bestVoice) {
+        utterance.voice = bestVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function playPhonicSound() {
+      playWarmChime(587.33, 0.3); // Gentle chime
+      playAcousticFSound(); // Real acoustic soft /f/ sound
+      // Use natural phrasing instead of raw "fff" which caused robot spelling
+      speakPhonics("The letter F says fuh. F is for Frog!");
+      showToast("Letter F says fuh! ", "🗣️");
+    }
+
+    function toggleAudioFX() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundToggle');
+      if (soundEnabled) {
+        btn.textContent = '🔊';
+        showToast('Sound Effects ON', '🔊');
+        playWarmChime(659.25, 0.3);
+      } else {
+        btn.textContent = '🔇';
+        showToast('Sound Effects OFF', '🔇');
+      }
+    }
+
+    function toggleVoiceSpeech() {
+      speechEnabled = !speechEnabled;
+      const status = document.getElementById('voiceStatus');
+      if (speechEnabled) {
+        status.textContent = 'ON';
+        status.className = 'text-emerald-600 font-black';
+        speakPhonics("Voice is on!");
+        showToast('Computer Voice ON', '🗣️');
+      } else {
+        window.speechSynthesis.cancel();
+        status.textContent = 'OFF';
+        status.className = 'text-rose-500 font-black';
+        showToast('Voice OFF (Teacher can speak now!)', '👩🏫');
+      }
+    }
+
+    /* =========================================================
+       UI UTILITIES (Toast, Tabs, Stars, Fullscreen, Tracing)
+       ========================================================= */
+    let toastTimeout = null;
+    
+
+    // Sparkle chime glissando for finding hidden F
+    function playSparkleSound() {
+      if (!soundEnabled) return;
+      const notes = [1318.5, 1567.9, 1760.0, 2093.0, 2637.0];
+      notes.forEach((freq, i) => {
+        setTimeout(() => playWarmChime(freq, 0.35, 'triangle'), i * 60);
+      });
+    }
+
+    // Gentle breeze sound (for Fan / Mouth blowing exercise)
+    function playBreezeSound() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const dur = 0.8;
+        const bufferSize = ctx.sampleRate * dur;
+        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+        }
+
+        const noise = ctx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1400, now);
+        filter.frequency.exponentialRampToValueAtTime(500, now + dur);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.2, now + 0.15);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+
+        noise.start(now);
+      } catch (e) {}
+    }
+
+    // Tongue slurp / gulp sound for catching flies
+    function playFlySlurp() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.3, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+        osc.connect(gain);
+        gain.connect(masterGain);
+
+        osc.start(now);
+        osc.stop(now + 0.18);
+      } catch (e) {}
+    }
+
+    function playMouthExercise() {
+      playBreezeSound();
+      speakPhonics("Put your top teeth on your bottom lip, and blow gentle air like a fan: fuh, fuh, fuh!");
+      showToast("Blow gentle air: /f/ /f/ /f/!", "🪶");
+    }
+
+function showToast(msg, icon = '⭐') {
+      const banner = document.getElementById('toastBanner');
+      document.getElementById('toastMsg').textContent = msg;
+      document.getElementById('toastIcon').textContent = icon;
+      banner.classList.remove('translate-y-24', 'opacity-0');
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        banner.classList.add('translate-y-24', 'opacity-0');
+      }, 2600);
+    }
+
+    function addTeacherStar(count = 1) {
+      classStars += count;
+      const el = document.getElementById('starScore');
+      if (el) el.textContent = classStars;
+      playStarSound();
+      showToast(`+${count} Star${count > 1 ? 's' : ''}! Great job!`, '⭐');
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
+      const targetSec = document.getElementById(`sec-${tabId}`);
+      if (targetSec) targetSec.classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold text-emerald-800 hover:bg-emerald-100 transition whitespace-nowrap";
+      });
+      const activeBtn = document.getElementById(`tab-${tabId}`);
+      if (activeBtn) {
+        activeBtn.className = "tab-btn px-3.5 py-1.5 rounded-full text-sm font-bold bg-emerald-500 text-white shadow-sm transition whitespace-nowrap";
+      }
+
+      playWarmChime(659.25, 0.2);
+
+      if (tabId === 'intro') {
+        setTimeout(initCanvas, 60);
+      } else if (tabId === 'flies') {
+        initFlyGame();
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    /* =========================================================
+       CANVAS FINGER TRACING (Big F and Small f)
+       ========================================================= */
+    let canvas, ctx;
+    let isDrawing = false;
+    let traceColor = '#10b981';
+    let currentTraceLetter = 'F';
+
+    function initCanvas() {
+      canvas = document.getElementById('traceCanvas');
+      if (!canvas) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      ctx = canvas.getContext('2d');
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = traceColor;
+
+      canvas.onmousedown = (e) => {
+        isDrawing = true;
+        const pt = getCanvasCoord(e);
+        ctx.beginPath();
+        ctx.moveTo(pt.x, pt.y);
+      };
+      canvas.onmousemove = (e) => {
+        if (!isDrawing) return;
+        const pt = getCanvasCoord(e);
+        ctx.lineTo(pt.x, pt.y);
+        ctx.stroke();
+      };
+      window.addEventListener('mouseup', () => {
+        if (isDrawing) {
+          isDrawing = false;
+          playWarmChime(784, 0.2);
+        }
+      });
+
+      canvas.ontouchstart = (e) => {
+        e.preventDefault();
+        isDrawing = true;
+        const pt = getCanvasCoord(e.touches[0]);
+        ctx.beginPath();
+        ctx.moveTo(pt.x, pt.y);
+      };
+      canvas.ontouchmove = (e) => {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const pt = getCanvasCoord(e.touches[0]);
+        ctx.lineTo(pt.x, pt.y);
+        ctx.stroke();
+      };
+      canvas.ontouchend = () => {
+        if (isDrawing) {
+          isDrawing = false;
+          playWarmChime(784, 0.2);
+        }
+      };
+    }
+
+    function getCanvasCoord(e) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      };
+    }
+
+    function clearTraceCanvas() {
+      if (ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        playWaterSplash();
+        showToast('Canvas cleared!', '🔄');
+      }
+    }
+
+    function changeTraceColor(col) {
+      traceColor = col;
+      if (ctx) ctx.strokeStyle = traceColor;
+      playWarmChime(523.25, 0.2);
+    }
+
+    function setTraceLetter(letter) {
+      currentTraceLetter = letter;
+      const guideText = document.getElementById('traceGuideText');
+      const hints = document.getElementById('traceHints');
+      const btnF = document.getElementById('traceBtnF');
+      const btnSmallF = document.getElementById('traceBtnSmallF');
+
+      if (letter === 'F') {
+        guideText.textContent = 'F';
+        btnF.className = 'px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500 text-white shadow';
+        btnSmallF.className = 'px-2.5 py-0.5 rounded-full text-xs font-black text-slate-600 hover:text-emerald-700';
+        hints.innerHTML = `
+          <span class="bg-emerald-200/80 px-2 py-0.5 rounded-full self-start shadow-sm">1. Down ⬇️</span>
+          <span class="bg-cyan-200/80 px-2 py-0.5 rounded-full self-center shadow-sm">2. Across top ➡️</span>
+          <span class="bg-amber-200/80 px-2 py-0.5 rounded-full self-end shadow-sm">3. Across middle ➡️</span>
+        `;
+        speakPhonics('Big F. Down, across, and across!');
+      } else {
+        guideText.textContent = 'f';
+        btnSmallF.className = 'px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500 text-white shadow';
+        btnF.className = 'px-2.5 py-0.5 rounded-full text-xs font-black text-slate-600 hover:text-emerald-700';
+        hints.innerHTML = `
+          <span class="bg-emerald-200/80 px-2 py-0.5 rounded-full self-start shadow-sm">1. Curve and down ⤵️</span>
+          <span class="bg-amber-200/80 px-2 py-0.5 rounded-full self-center shadow-sm">2. Cross the middle ➡️</span>
+          <span></span>
+        `;
+        speakPhonics('Small f. Curve up, go down, and cross the middle!');
+      }
+      clearTraceCanvas();
+    }
+
+    /* =========================================================
+       FEED FREDDY THE FROG (Snack Drag and Drop / Click)
+       ========================================================= */
+    const SNACK_ITEMS = [
+      { id: 'fish', word: 'Fish', emoji: '🐟', startsWithF: true },
+      { id: 'apple', word: 'Apple', emoji: '🍎', startsWithF: false },
+      { id: 'flower', word: 'Flower', emoji: '🌸', startsWithF: true },
+      { id: 'ball', word: 'Ball', emoji: '⚽', startsWithF: false },
+      { id: 'fan', word: 'Fan', emoji: '🪭', startsWithF: true },
+      { id: 'fox', word: 'Fox', emoji: '🦊', startsWithF: true },
+      { id: 'cat', word: 'Cat', emoji: '🐱', startsWithF: false },
+      { id: 'flamingo', word: 'Flamingo', emoji: '🦩', startsWithF: true },
+      { id: 'banana', word: 'Banana', emoji: '🍌', startsWithF: false }
+    ];
+
+    function renderSnacks() {
+      const container = document.getElementById('snackContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      SNACK_ITEMS.forEach(item => {
+        const div = document.createElement('div');
+        div.id = `snack-${item.id}`;
+        div.draggable = true;
+        div.className = "snack-card btn-bounce cursor-grab active:cursor-grabbing bg-white p-2.5 rounded-2xl shadow-md border-2 border-emerald-200 flex flex-col items-center justify-center hover:border-emerald-400 hover:scale-105 transition transform";
+        div.innerHTML = `
+          <span class="text-3xl sm:text-4xl pointer-events-none mb-1">${item.emoji}</span>
+          <span class="font-black text-xs sm:text-sm text-slate-800 pointer-events-none">${item.word}</span>
+        `;
+
+        div.ondragstart = (e) => {
+          e.dataTransfer.setData('text/plain', JSON.stringify(item));
+        };
+
+        div.onclick = () => {
+          feedFrogWithItem(item, div);
+        };
+
+        container.appendChild(div);
+      });
+    }
+
+    function allowDrop(e) {
+      e.preventDefault();
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      try {
+        const data = e.dataTransfer.getData('text/plain');
+        if (data) {
+          const item = JSON.parse(data);
+          const elem = document.getElementById(`snack-${item.id}`);
+          feedFrogWithItem(item, elem);
+        }
+      } catch (err) {}
+    }
+
+    function feedFrogWithItem(item, elem) {
+      const speech = document.getElementById('frogSpeech');
+      const mouth = document.getElementById('frogMouth');
+
+      if (item.startsWithF) {
+        playFrogRibbit();
+        setTimeout(playWaterSplash, 180);
+        setTimeout(playStarSound, 320);
+
+        mouth.setAttribute('d', 'M 60 115 Q 100 180 140 115 Z');
+        mouth.setAttribute('fill', '#991b1b');
+
+        speech.innerHTML = `🌟 "YUMMY! <strong>${item.word}</strong> starts with F!"`;
+        speakPhonics(`Yum! ${item.word} starts with letter F!`);
+
+        window.confetti && window.confetti({
+          particleCount: 40,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+
+        if (elem) {
+          elem.style.transform = 'scale(0)';
+          elem.style.opacity = '0';
+          setTimeout(() => {
+            elem.style.display = 'none';
+          }, 300);
+        }
+
+        addTeacherStar(1);
+
+        setTimeout(() => {
+          mouth.setAttribute('d', 'M 60 120 Q 100 150 140 120');
+          mouth.setAttribute('fill', 'transparent');
+        }, 1300);
+
+      } else {
+        playOopsSound();
+        speech.innerHTML = `🤔 "Oops! <strong>${item.word}</strong> does not start with F!"`;
+        speakPhonics(`Oops! ${item.word} does not start with F! Try another snack!`);
+
+        const graphic = document.getElementById('frogGraphic');
+        graphic.classList.add('animate-shake');
+        setTimeout(() => graphic.classList.remove('animate-shake'), 600);
+      }
+    }
+
+    function pokeFrog() {
+      playFrogRibbit();
+      playWaterSplash();
+      speakPhonics("Ribbit! F is for Frog!");
+      showToast("Ribbit! F is for Frog!", "🐸");
+      const graphic = document.getElementById('frogGraphic');
+      graphic.classList.add('scale-110');
+      setTimeout(() => graphic.classList.remove('scale-110'), 250);
+    }
+
+    function resetSnacks() {
+      renderSnacks();
+      playWaterSplash();
+      const speech = document.getElementById('frogSpeech');
+      speech.textContent = '"Ribbit! I am hungry for Letter F snacks!" 😋';
+      showToast('Snacks are back!', '🍽️');
+    }
+
+    /* =========================================================
+       CATCH THE LETTER F FLIES (Bug Catching Game)
+       ========================================================= */
+    const FLY_LIST = [
+      { id: 1, letter: 'F', isF: true, top: '20%', left: '15%' },
+      { id: 2, letter: 'B', isF: false, top: '25%', left: '42%' },
+      { id: 3, letter: 'f', isF: true, top: '55%', left: '30%' },
+      { id: 4, letter: 'D', isF: false, top: '18%', left: '70%' },
+      { id: 5, letter: 'F', isF: true, top: '60%', left: '62%' },
+      { id: 6, letter: 'A', isF: false, top: '48%', left: '82%' },
+      { id: 7, letter: 'f', isF: true, top: '28%', left: '88%' }
+    ];
+    let fliesCaughtCount = 0;
+    const totalFFlies = 4;
+
+    function initFlyGame() {
+      const container = document.getElementById('flyTargetsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      fliesCaughtCount = 0;
+      updateFlyScore();
+      document.getElementById('flyWinBanner').classList.add('hidden');
+
+      FLY_LIST.forEach(fly => {
+        const div = document.createElement('div');
+        div.id = `fly-${fly.id}`;
+        div.className = 'absolute cursor-pointer flutter-fly btn-bounce p-2 flex flex-col items-center transition transform';
+        div.style.top = fly.top;
+        div.style.left = fly.left;
+        div.style.animationDelay = `${(fly.id * 0.4).toFixed(1)}s`;
+
+        const badgeColor = fly.isF ? 'bg-amber-300 text-amber-950 border-amber-500' : 'bg-slate-200 text-slate-700 border-slate-400';
+
+        div.innerHTML = `
+          <span class="text-3xl filter drop-shadow">🪰</span>
+          <span class="text-xs font-black px-2 py-0.5 rounded-full border shadow-sm ${badgeColor}">
+            ${fly.letter}
+          </span>
+        `;
+
+        div.onclick = () => catchFly(fly, div);
+        container.appendChild(div);
+      });
+    }
+
+    function catchFly(fly, elem) {
+      if (fly.isF) {
+        playFlySlurp();
+        setTimeout(playFrogRibbit, 120);
+        setTimeout(playWaterSplash, 220);
+
+        elem.style.transform = 'scale(1.5) rotate(20deg)';
+        elem.innerHTML = '<span class="text-3xl animate-ping">✨</span>';
+        setTimeout(() => {
+          elem.style.display = 'none';
+        }, 320);
+
+        fliesCaughtCount++;
+        updateFlyScore();
+        addTeacherStar(1);
+        speakPhonics(`Gulp! Letter ${fly.letter} caught!`);
+
+        window.confetti && window.confetti({
+          particleCount: 25,
+          spread: 50,
+          origin: { y: 0.6 }
+        });
+
+        if (fliesCaughtCount >= totalFFlies) {
+          setTimeout(() => {
+            document.getElementById('flyWinBanner').classList.remove('hidden');
+            playStarSound();
+            speakPhonics("Super job! Freddy caught all the letter F flies!");
+            window.confetti && window.confetti({ particleCount: 70, spread: 80, origin: { y: 0.5 } });
+          }, 600);
+        }
+      } else {
+        playOopsSound();
+        speakPhonics(`That is letter ${fly.letter}! Freddy only catches letter F!`);
+        elem.classList.add('animate-spin');
+        setTimeout(() => elem.classList.remove('animate-spin'), 500);
+      }
+    }
+
+    function updateFlyScore() {
+      const text = document.getElementById('flyScoreText');
+      if (text) text.textContent = `${fliesCaughtCount} / ${totalFFlies}`;
+    }
+
+    function resetFlyGame() {
+      initFlyGame();
+      playWaterSplash();
+      showToast('New buzzing flies are here!', '🪰');
+    }
+
+    /* =========================================================
+       POND DETECTIVE: FIND HIDDEN Fs
+       ========================================================= */
+    let foundHiddenLetters = new Set();
+    const totalHidden = 5;
+
+    function findHiddenLetter(num, description) {
+      if (foundHiddenLetters.has(num)) return;
+      foundHiddenLetters.add(num);
+
+      const target = document.getElementById(`hide-${num}`);
+      if (target) {
+        target.classList.remove('pulse-glow');
+        target.classList.add('scale-125', 'bg-amber-400', 'text-amber-950', 'border-amber-600');
+      }
+
+      playSparkleSound();
+      setTimeout(playStarSound, 250);
+
+      window.confetti && window.confetti({
+        particleCount: 30,
+        spread: 60,
+        origin: { y: 0.6 }
+      });
+
+      addTeacherStar(1);
+      speakPhonics(`You found an F! ${description}`);
+      showToast(`Found: ${description}`, '🔎');
+
+      updateDetectiveBasket();
+
+      if (foundHiddenLetters.size >= totalHidden) {
+        setTimeout(() => {
+          speakPhonics("Hooray! You are a master pond detective! All letter F's found!");
+          window.confetti && window.confetti({ particleCount: 80, spread: 100, origin: { y: 0.5 } });
+        }, 800);
+      }
+    }
+
+    function updateDetectiveBasket() {
+      const score = document.getElementById('detectiveScoreText');
+      if (score) score.textContent = `${foundHiddenLetters.size} / ${totalHidden}`;
+
+      const basket = document.getElementById('foundBasket');
+      if (!basket) return;
+      basket.innerHTML = '';
+      foundHiddenLetters.forEach(item => {
+        const span = document.createElement('span');
+        span.className = 'bg-amber-300 text-amber-950 font-black text-xs px-2 py-0.5 rounded-full border border-amber-500 shadow-sm animate-bounce';
+        span.textContent = item % 2 === 1 ? 'F' : 'f';
+        basket.appendChild(span);
+      });
+    }
+
+    function resetDetectiveGame() {
+      foundHiddenLetters.clear();
+      updateDetectiveBasket();
+      for (let i = 1; i <= 5; i++) {
+        const el = document.getElementById(`hide-${i}`);
+        if (el) {
+          el.classList.add('pulse-glow');
+          el.classList.remove('scale-125', 'bg-amber-400', 'text-amber-950');
+        }
+      }
+      playWaterSplash();
+      showToast('All F letters are hiding again!', '🔍');
+    }
+
+    /* =========================================================
+       LILY PAD PHONICS HOP & AUTO HOP TOUR
+       ========================================================= */
+    const WORDS_DATA = [
+      { word: 'Frog', emoji: '🐸', phrase: 'F is for Frog! Ribbit!' },
+      { word: 'Fish', emoji: '🐟', phrase: 'F is for Fish! Swim, swim!' },
+      { word: 'Fox', emoji: '🦊', phrase: 'F is for Fox! Clever orange fox!' },
+      { word: 'Flower', emoji: '🌸', phrase: 'F is for Flower! Smells so sweet!' },
+      { word: 'Fan', emoji: '🪭', phrase: 'F is for Fan! Blow cool air!' },
+      { word: 'Foot', emoji: '🦶', phrase: 'F is for Foot! Stomp your feet!' }
+    ];
+
+    function hopToWord(word, emoji, element) {
+      playHopSound();
+      setTimeout(playWarmChime, 140);
+
+      document.querySelectorAll('.lily-pad').forEach(p => p.classList.remove('ring-4', 'ring-amber-400'));
+      if (element) element.classList.add('ring-4', 'ring-amber-400');
+
+      const emojiEl = document.getElementById('activeHopEmoji');
+      const wordEl = document.getElementById('activeHopWord');
+      if (emojiEl) emojiEl.textContent = emoji;
+      if (wordEl) wordEl.textContent = `${word}! F is for ${word}!`;
+
+      speakPhonics(`F is for ${word}! ${word}!`);
+      showToast(`F is for ${word}!`, emoji);
+    }
+
+    let isAutoHopping = false;
+    function autoHopAllWords() {
+      if (isAutoHopping) return;
+      isAutoHopping = true;
+      let idx = 0;
+      const pads = document.querySelectorAll('.lily-pad');
+
+      function nextHop() {
+        if (idx >= WORDS_DATA.length) {
+          isAutoHopping = false;
+          showToast('Completed the Word Hop Tour! Great job!', '🌟');
+          return;
+        }
+        const item = WORDS_DATA[idx];
+        const padElem = pads[idx];
+        hopToWord(item.word, item.emoji, padElem);
+        idx++;
+        setTimeout(nextHop, 3200);
+      }
+      nextHop();
+    }
+
+    /* =========================================================
+       FROG PHONICS WORKOUT (Kinesthetic Movement Break)
+       ========================================================= */
+    function doWorkoutAction(type) {
+      const box = document.getElementById('workoutStatusBox');
+      if (type === 'frog') {
+        playFrogRibbit();
+        setTimeout(playHopSound, 200);
+        setTimeout(playHopSound, 600);
+        setTimeout(playHopSound, 1000);
+        box.innerHTML = '🐸 <strong>Hop, Hop, Hop!</strong> 1... 2... 3... HOP like a frog!';
+        speakPhonics('Stand up, little frogs! Crouch down... 1, 2, 3... HOP! HOP! HOP like a frog!');
+        showToast('Hop like a frog!', '🐸');
+      } else if (type === 'fish') {
+        playWaterSplash();
+        setTimeout(playWaterSplash, 400);
+        box.innerHTML = '🐟 <strong>Swim Like a Fish!</strong> Swish to the left, swish to the right!';
+        speakPhonics('Put your hands together like fins! Swish to the left... swish to the right... swim like a fish!');
+        showToast('Swim like a fish!', '🐟');
+      } else if (type === 'fan') {
+        playBreezeSound();
+        box.innerHTML = '🪭 <strong>Blow Like a Fan!</strong> Top teeth on bottom lip: /ffffff/!';
+        speakPhonics('Put your top teeth on your bottom lip! Blow soft cool air like a fan: fuh, fuh, fuh!');
+        showToast('Blow air like a fan: /f/ /f/ /f/!', '🪶');
+      } else if (type === 'flamingo') {
+        playSparkleSound();
+        box.innerHTML = '🦩 <strong>Balance on One Foot!</strong> Stand tall like a flamingo!';
+        speakPhonics('Lift one foot up high! Balance on one leg like a pretty pink flamingo! 1... 2... 3... Hooray!');
+        showToast('Balance on one foot!', '🦩');
+      }
+      addTeacherStar(1);
+    }
+
+    /* =========================================================
+       LETTER F SING-ALONG CHANT (Karaoke Style)
+       ========================================================= */
+    let chantInterval = null;
+    function playChantKaraoke() {
+      const lines = [
+        { id: 'chant-line-1', text: "F is for Frog, jumping up high!" },
+        { id: 'chant-line-2', text: "Hop, hop, Frog, leaping to the sky!" },
+        { id: 'chant-line-3', text: "Ribbit, ribbit, HOP! Ribbit, ribbit, STOP!" }
+      ];
+
+      const btn = document.getElementById('btnPlayChant');
+      btn.disabled = true;
+      btn.classList.add('opacity-50');
+
+      let current = 0;
+
+      function speakNextLine() {
+        if (current >= lines.length) {
+          document.querySelectorAll('.chant-line').forEach(el => {
+            el.classList.remove('bg-amber-300', 'scale-105', 'shadow-md', 'text-amber-950');
+          });
+          btn.disabled = false;
+          btn.classList.remove('opacity-50');
+          window.confetti && window.confetti({ particleCount: 50, spread: 80, origin: { y: 0.7 } });
+          addTeacherStar(2);
+          showToast('Sing-Along Complete! Super stars!', '🎶');
+          return;
+        }
+
+        document.querySelectorAll('.chant-line').forEach(el => {
+          el.classList.remove('bg-amber-300', 'scale-105', 'shadow-md', 'text-amber-950');
+        });
+
+        const activeLineEl = document.getElementById(lines[current].id);
+        activeLineEl.classList.add('bg-amber-300', 'scale-105', 'shadow-md', 'text-amber-950');
+
+        playHopSound();
+        // Calibrated slow chant delivery
+        speakPhonics(lines[current].text, 0.82);
+
+        current++;
+        setTimeout(speakNextLine, 3800);
+      }
+
+      speakNextLine();
+    }
+
+    /* =========================================================
+       WINDOW ONLOAD & RESIZE
+       ========================================================= */
+    window.onload = function() {
+      initCanvas();
+      renderSnacks();
+      initFlyGame();
+      window.addEventListener('resize', initCanvas);
+    };
+  </script>
+</body>
+</html>
